@@ -16,5 +16,5 @@ X = torch.randn(10, 5, requires_grad=True, dtype=torch.float64)
 W = torch.randn(5, 5, requires_grad=True, dtype=torch.float64)
 b = torch.randn(5, requires_grad=True, dtype=torch.float64)
 
-linear_check = torch.autograd.gradcheck(Linear, (X, W, b))
+linear_check = torch.autograd.gradcheck(linear, (X, W, b))
 print("Test du gradient pour Linear:", linear_check)

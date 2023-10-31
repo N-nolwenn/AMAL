@@ -34,7 +34,7 @@ class MSE(Function):
         ctx.save_for_backward(yhat, y) # ctx permet de sauvegarder un contexte lors de la passe forward
 
         #  TODO:  Renvoyer la valeur de la fonction
-        loss = torch.mean(torch.pow(yhat - y, 2))
+        loss = torch.sum(torch.pow(yhat - y, 2)) / yhat.shape[0] # On normalise la valeur de l'erreur en divisant par  nbr total d'échantillons
         return loss
 
     @staticmethod
@@ -43,8 +43,8 @@ class MSE(Function):
         ## Calcul du gradient du module par rapport a chaque groupe d'entrées
         yhat, y = ctx.saved_tensors # le paramètre ctx est passe lors de la backward afin de récupérer les valeurs.
         #  TODO:  Renvoyer par les deux dérivées partielles (par rapport à yhat et à y)
-        dL_dyhat = 2 * (yhat - y)
-        dL_dy = 2 * (yhat - y)
+        dL_dyhat = 2 * (yhat - y) / yhat.shape[0]
+        dL_dy = -2 * (yhat - y) / yhat.shape[0]
         return dL_dyhat * grad_output, dL_dy * grad_output
 
 #  TODO:  Implémenter la fonction Linear(X, W, b)sur le même modèle que MSE
@@ -63,7 +63,7 @@ class Linear(Function):
 
         dL_dX = torch.matmul(grad_output, W.t())
         dL_dW = torch.matmul(X.t(), grad_output)
-        dL_db = grad_output.sum(0)
+        dL_db = torch.sum(grad_output, dim = 0)
 
         return dL_dX, dL_dW, dL_db
 
