@@ -8,6 +8,7 @@ import re
 
 ## Token de padding (BLANK) represente l'index du padding token
 PAD_IX = 0
+
 ## Token de fin de séquence
 EOS_IX = 1
 
@@ -34,7 +35,7 @@ def normalize(s):
 
 def string2code(s):
     """prend une séquence de lettres et renvoie la séquence d'entiers correspondantes"""
-    return torch.tensor([lettre2id[c] for c in normalize(s)])
+    return torch.tensor([lettre2id[c] for c in normalize(s)], dtype=torch.long)
 
 def code2string(t):
     """ prend une séquence d'entiers et renvoie la séquence de lettres correspondantes """
@@ -78,7 +79,6 @@ def pad_collate_fn(samples: List[List[int]]):
     batch = [seq.tolist() + [PAD_IX] * (max_len - len(seq)) for seq in samples]
 
     return torch.Tensor(batch).T
-
 
 
 if __name__ == "__main__":
